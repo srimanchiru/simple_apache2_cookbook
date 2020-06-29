@@ -1,0 +1,22 @@
+---
+driver:
+  name: vagrant
+  network:
+    # define the port forwarding to access service from host/developer machine
+    - ["forwarded_port", {guest: 80, host: 8080}]
+
+provisioner:
+  name: chef_zero
+  deprecations_as_errors: true
+  chef_license: accept-no-persist
+
+platforms:
+  - name: ubuntu-18.04
+    driver:
+      name: vagrant
+
+suites:
+  - name: default
+    run_list:
+      - recipe[simple_apache2_cookbook::default]
+    attributes:

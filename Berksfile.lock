@@ -1,0 +1,7 @@
+DEPENDENCIES
+  simple_apache2_cookbook
+    path: .
+    metadata: true
+
+GRAPH
+  simple_apache2_cookbook (0.1.0)

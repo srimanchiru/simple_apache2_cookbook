@@ -1,0 +1,76 @@
+1. Install Virtualbox download from https://www.virtualbox.org/wiki/Downloads
+
+2. Install Vagrant https://www.vagrantup.com/docs/installation
+
+3. Install Ruby download https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-2.7.1-1/rubyinstaller-devkit-2.7.1-1-x64.exe
+
+4. Install gems https://rubygems.org/pages/download#formats
+
+5. c:\rubygems-3.1.4>ruby setup.rb
+   c:\rubygems-3.1.4>ridk install and select option 3
+   c:\rubygems-3.1.4>gem install virtualbox vagrant chef test-kitchen kitchen-vagrant kitchen-inspec inspec berkshelf
+   
+6. https://packages.chef.io/files/stable/chef-workstation/20.6.62/windows/10/chef-workstation-20.6.62-1-x64.msi
+
+Install Test Kitchen, VAGRANT and VirtualBox:
+Chef Test Kitchen: Test Kitchen is a testing tool that can execute your CHEF recipes on one or more platforms in isolation. A driver plugin architecture is used which lets you run your recipes on various cloud providers and virtualization technologies.
+CHEF test kitchen has enabled us to reduce new cookbook/recipes testing time to minutes by provisioning VAGRANT box on our local workstation.
+
+
+Kitchen.yml can be created in chef-repo directory or in the recipe directory. If you initialize kitchen in recipe directory, recipe name will be automatically added to the kitchen.yml.
+
+You can create kitchen.yml file in the chef-repo directory (as shown below) or in specific cookbook directory.
+
+C:\chef-repo\cookbooks\simple_apache2_cookbook>kitchen init
+      create  kitchen.yml
+      create  chefignore
+      create  test/integration/default
+
+c:\chef-workspace\chefrepo> kitchen list
+$ kitchen list
+Instance             Driver   Provisioner  Verifier  Transport  Last Action    Last Error
+default-ubuntu-1804  Vagrant  ChefSolo     Busser    Ssh        <Not Created>  <None>
+default-centos-7     Vagrant  ChefSolo     Busser    Ssh        <Not Created>  <None>
+
+c:\chef-workspace\chefrepo> kitchen create
+
+To execute recipe on the VAGRANT virtual machine, use the below-mentioned command:
+
+	  
+Add the below mentioned content to the kitchen.yml file for sample apache2 server configuration, in this file you can configure basic details like driver name (vagrant or docker), provisioner, base OS image, memory and recipe name.
+
+
+---
+driver:
+  name: vagrant
+  network:
+    # define the port forwarding to access service from host/developer machine
+    - ["forwarded_port", {guest: 80, host: 8080}]
+
+provisioner:
+  name: chef_zero
+  deprecations_as_errors: true
+  chef_license: accept-no-persist
+
+platforms:
+  - name: ubuntu-18.04
+    driver:
+      name: vagrant
+
+suites:
+  - name: default
+    run_list:
+      - recipe[simple_apache2_cookbook::default]
+    attributes:
+
+To create VAGRANT machine use below-mentioned command:
+
+
+c:\chef-workspace\chefrepo> kitchen converge
+
+To login to the VAGRANT vm, use kitchen login command as shown below:
+c:\chef-workspace\chefrepo> kitchen login
+
+And after testing if you want to delete the setup i.e. vagrant vm, use the command mentioned-below:
+c:\chef-workspace\chefrepo> kitchen destroy
+
